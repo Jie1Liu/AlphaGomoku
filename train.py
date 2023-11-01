@@ -82,10 +82,6 @@ class PolicyValueNet():
             self.policy_value_net.load_state_dict(net_params)
 
     def policy_value(self, state_batch):
-        """
-        input: a batch of states
-        output: a batch of action probabilities and state values
-        """
         if self.use_gpu:
             state_batch = Variable(torch.FloatTensor(state_batch).cuda())
             log_act_probs, value = self.policy_value_net(state_batch)
@@ -98,11 +94,6 @@ class PolicyValueNet():
             return act_probs, value.data.numpy()
 
     def policy_value_fn(self, board):
-        """
-        input: board
-        output: a list of (action, probability) tuples for each available
-        action and the score of the board state
-        """
         legal_positions = board.availables
         current_state = np.ascontiguousarray(board.current_state().reshape(
                 -1, 4, self.board_width, self.board_height))
@@ -228,7 +219,7 @@ class TrainPipeline():
         return extend_data
 
     def collect_selfplay_data(self, n_games=1):
-        """collect self-play data for training"""
+      
         for i in range(n_games):
             winner, play_data = self.game.start_self_play(self.mcts_player,
                                                           temp=self.temp)
@@ -272,8 +263,7 @@ class TrainPipeline():
                "loss:{},"
                "entropy:{},"
                "explained_var_old:{:.3f},"
-               "explained_var_new:{:.3f}"
-               ).format(kl,
+               "explained_var_new:{:.3f}").format(kl,
                         self.lr_multiplier,
                         loss,
                         entropy,
